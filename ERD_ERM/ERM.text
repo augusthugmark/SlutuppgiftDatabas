@@ -1,0 +1,44 @@
+Här är min ER-Modell som jag väljer att precis som koden i själva programmet skriva i Engelska.
+Programmet ska vara en databas för ett Bibliotek och hantera:
+böcker, författare, författare och böckers relation, boklån.
+För ERD se ERD.drawio
+
+// Kommentarer skriver jag i Svenska.
+
+Book                                      // En bok kan ha flera författare.
+(
+    BookID INT PRIMARY KEY,               // Primärnyckel för boken
+    Title VARCHAR(64) NOT NULL,           // Bokens titel
+    PublicationYear INT NOT NULL,         // Året boken publicerades
+    Genre VARCHAR(32) NOT NULL            // Bokens genre
+);
+
+Author                                   // En/flera författare kan ha skrivit flera böcker.
+(
+    AuthorID INT PRIMARY KEY,            // Primärnyckel för författaren
+    FirstName VARCHAR(32) NOT NULL,      // Författarens förnamn
+    LastName VARCHAR(64) NOT NULL,       // Författarens efternamn
+    DateOfBirth DATE NOT NULL            // Författarens födelsedatum
+);
+
+BookLoan                                // En bok kan vara utlånad flera gånger men bara en gång åt gången.
+(
+    BookLoanID INT PRIMARY KEY,                        // Primärnyckel för boklån
+    LoanDate DATE NOT NULL,                            // Datum då boken lånades ut
+    ReturnDate DATE NULL,                              // Datum då boken återlämnades
+    BookID INT REFERENCES Book(BookID) NOT NULL        // Främmande nyckel till Book
+);
+
+BookAuthorLink  (Bryggtabell)           // Ska hantera många-till-många-relation mellan böcker och författare.
+                                        
+(
+    BookID INT REFERENCES Book(BookID) NOT NULL,       // Främmande nyckel till Book
+    AuthorID INT REFERENCES Author(AuthorID) NOT NULL, // Främmande nyckel till en eller flera Author(s)
+    PRIMARY KEY (BookID, AuthorID)                     // Sammansatt primärnyckel
+);
+
+
+Sammanfattning för relationer:
+
+Böcker till författare och vice versa (många till många), en eller flera författare kan ha skrivit en eller flera böcker. 
+böcker till boklån (en till många), en bok kan va utlånad flera gånger (men bara en stycken utlåning i taget, därav ReturnDate).
